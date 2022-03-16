@@ -16,24 +16,30 @@ class User {
 
                     throw 'the user name is not valid!';
                 } else {
-                    // console.log('helooo =====>2');
-                    let sql = 'INSERT INTO users (user_name, user_password, email) VALUES ($1, $2, $3);';
+                    let sql = 'INSERT INTO users (user_name, user_password, email) VALUES ($1, $2, $3) RETURNING*;';
                     let safeValue = [record.user_name, record.user_password, record.email];
 
-                    await client.query(sql, safeValue);
-
-                    let sql1 = 'SELECT user_name FROM users;';
-                    return client.query(sql1).then((results) => {
-
-                        // console.log('heloo40000000000000===>', results.rows.length);
+                    return await client.query(sql, safeValue).then(results => {
                         return results.rows;
+                    }).catch(err => {
+                        console.log('error in database body request', err);
                     })
+
+                    // let sql1 = 'SELECT user_name FROM users;';
+                    // return client.query(sql1).then((results) => {
+
+                    //     return results.rows;
+                    // }).catch(err => {
+                    //     console.log('error in get database data', err);
+                    // })
                 }
+            }).catch(err => {
+                console.log('error in database query', err);
             })
         }
     }
     readUser(username) {
-        console.log(username, 'befor--->');
+        // console.log(username, 'befor--->');
         let sql = 'SELECT * FROM users WHERE user_name=$1;';
         let saveValue = [username];
         return client.query(sql, saveValue).then((user) => {

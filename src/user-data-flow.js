@@ -14,16 +14,16 @@ class UserDataFlow {
         }
     }
     getToken(user) {
+        // console.log(user, 'this is the user');
         let token = jwt.sign({ user_name: user.user_name }, process.env.SECRET);
         return token;
     }
     async baicAuth(userName, pass) {
-        // console.log('fuuuucckkkk', typeof userName);
         const dataUser = await user.readUser(userName);
-        console.log('fromdatabase------------>', dataUser);
+        // console.log('fromdatabase------------>', dataUser);
         let logPass = await dataUser.rows[0].user_password;
         let valid = await bcrypt.compare(pass, logPass)
-        console.log('the is the valid ---->', dataUser.rows[0]);
+            // console.log('the is the valid ---->', valid);
         return valid ? dataUser.rows[0] : Promise.reject();
     }
     verifyToken(token) {
